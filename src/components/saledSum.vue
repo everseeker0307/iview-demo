@@ -1,17 +1,25 @@
 <template>
 	<div>
-		<div align="center" style="margin-top: 20px">
-			<Radio-group v-model="radioButton" type="button">
-				<Radio label="按日统计"></Radio>
-				<Radio label="按周统计"></Radio>
-				<Radio label="按月统计"></Radio>
-			</Radio-group>
-		</div>
-		<Spin v-if="loading" style="margin: 80px">
-            <Icon type="load-c" size=24 class="spin-icon-load"></Icon>
-            <div>Loading...</div>
-        </Spin>
-		<div id="showChart" style="width: 900px; height: 500px"></div>
+        <Row>
+            <Col span="16">
+                <div align="center" style="margin-top: 20px">
+                <Radio-group v-model="radioButton" type="button" @on-change="changeItem">
+                    <Radio label="按日统计"></Radio>
+                    <Radio label="按周统计"></Radio>
+                    <Radio label="按月统计"></Radio>
+                </Radio-group>
+                </div>
+                <Spin v-if="loading" style="margin-top: 20px">
+                    <Icon type="load-c" size=24 class="spin-icon-load"></Icon>
+                    <div>Loading...</div>
+                </Spin>
+                <Spin v-if="!loading" style="margin-top: 20px; height: 45px"></Spin>
+                <div id="showChart" style="width: 900px; height: 500px"></div>
+            </Col>
+            <Col span="8">
+                <TodayDealDetails ref="tdd"></TodayDealDetails>
+            </Col>
+        </Row>
 	</div>
 </template>
 <script>
@@ -25,19 +33,34 @@
     			data: [],
     			saledData: [],
     			loading: true,
-    			radioButton: '按日',
+    			radioButton: '按日统计'
     		}
     	},
         mounted() {
+            this.selDate = new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString();
             this.getDailySaledSum();
+            this.$refs.tdd.$emit('getTodayDealDetails', new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString());
         },
         methods: {
+            changeItem(param) {
+                this.radioButton = param;
+                this.saledData = [];
+                this.loading = true;
+                this.getDailySaledSum();
+            },
             getDailySaledSum() {
                 const that = this;
+                let dateSpace = 1;
+                if (this.radioButton === "按日统计")
+                    dateSpace = 1;
+                else if (this.radioButton === "按周统计")
+                    dateSpace = 7;
+                else if (this.radioButton === "按月统计")
+                    dateSpace = 30;
                 axios.post('http://localhost:8080/getIntervalSaledHouseNumSum', Qs.stringify({
                         startDay: '',
                         endDay: new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(),
-                        interval: 1
+                        interval: dateSpace
                     })
                 )
                 .then(function(resp) {
@@ -53,7 +76,7 @@
                 });
             },
             drawChart() {
-            	const myChart = echarts.init(document.getElementById('showChart'));
+                const myChart = echarts.init(document.getElementById('showChart'));
             	for (let each in this.data) {
             		let date = this.data[each]["date"];
             		this.saledData.push({"name": date, "value": [date, this.data[each]["dealNumSum"]]});
@@ -100,9 +123,11 @@
             		}]
             	};
             	myChart.setOption(option);
+                const that = this;
             	myChart.on('click', function(params) {
-	            	console.log("ab");
-			    	console.log(params);
+			    	console.log(params.name);
+                    that.selDate = params.name;
+                    that.$refs.tdd.$emit('getTodayDealDetails', params.name);
 			    });
 	        }
         }

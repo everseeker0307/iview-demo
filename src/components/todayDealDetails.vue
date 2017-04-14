@@ -11,6 +11,7 @@
     import axios from 'axios';
     import Qs from 'qs';
     export default {
+        props: ['selDate', 'selInterval'],
         data() {
             return {
                 column_deal: [
@@ -28,9 +29,24 @@
             }
         },
         created() {
-            this.getTodayDealDetails();
-            this.getForsaleHouseNumSum();
-            this.getDailySaledSum();
+            var that = this;
+            this.$on('getTodayDealDetails', function(param1) {
+                console.log('param=' + param1);
+                //post默认发送的参数为json格式，通过Qs.stringify()转换为form-data格式
+                axios.post('http://localhost:8080/getTodayDealDetails', Qs.stringify({
+                        today: param1
+                    })
+                )
+                .then(function(resp) {
+                    console.log(resp.data);
+                    that.loading = false;
+                    that.data_deal = resp.data;
+                })
+                .catch(function(resp) {
+                    console.log(resp);
+                })
+            });
+            // this.getForsaleHouseNumSum();
         },
         methods: {
             getForsaleHouseNumSum() {
@@ -46,22 +62,21 @@
                     console.log(resp);
                 });
             },
-            getTodayDealDetails() {
-                var that = this;
-                //post默认发送的参数为json格式，通过Qs.stringify()转换为form-data格式
-                axios.post('http://localhost:8080/getTodayDealDetails', Qs.stringify({
-                        today: new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString()
-                    })
-                )
-                .then(function(resp) {
-                    console.log(resp.data);
-                    that.loading = false;
-                    that.data_deal = resp.data;
-                })
-                .catch(function(resp) {
-                    console.log(resp);
-                });
-            }
+            // getTodayDealDetails(param1) {
+            //     //post默认发送的参数为json格式，通过Qs.stringify()转换为form-data格式
+            //     axios.post('http://localhost:8080/getTodayDealDetails', Qs.stringify({
+            //             today: param1
+            //         })
+            //     )
+            //     .then(function(resp) {
+            //         console.log(resp.data);
+            //         that.loading = false;
+            //         that.data_deal = resp.data;
+            //     })
+            //     .catch(function(resp) {
+            //         console.log(resp);
+            //     })
+            // }
         }
     }
 </script>
