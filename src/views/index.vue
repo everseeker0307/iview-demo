@@ -19,8 +19,7 @@
     export default {
         data() {
             return {
-                item: '1'
-            }
+                item: '1'            }
         },
         methods: {
             changeMenu: function() {

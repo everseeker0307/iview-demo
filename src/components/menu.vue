@@ -25,15 +25,25 @@
 		<div class="layout-nav">
 			<Menu-item name="1">
 				<Icon type="ios-navigate"></Icon>
-				成交量趋势
+				成交量
 			</Menu-item>
-			<Menu-item name="2">
-				<Icon type="ios-paper"></Icon>
-				成交详情
-			</Menu-item>
+            <Submenu name="2">
+                <template slot="title">
+                    <Icon type="ios-paper"></Icon>
+                        在售库存
+                </template>
+                <Menu-item name="2-1">
+                    <Icon type="ios-paper"></Icon>
+                    住宅库存
+                </Menu-item>
+                <Menu-item name="2-2">
+                    <Icon type="ios-paper"></Icon>
+                    商业办公库存
+                </Menu-item>
+            </Submenu>
 			<Menu-item name="3">
 				<Icon type="ios-keypad"></Icon>
-				库存趋势
+				限售库存
 			</Menu-item>
 		</div>
 	</Menu>

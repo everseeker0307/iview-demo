@@ -5,10 +5,11 @@
 				<template v-if="this.page == '1'">
 					<SaledSum></SaledSum>
 				</template>
-			</Col>
-			<Col style="width: auto; height: auto">
-				<template v-if="this.page == '2'">
-					<TodayDealDetails></TodayDealDetails>
+				<template v-if="this.page == '2-1'">
+					<ForsaleZZSum></ForsaleZZSum>
+				</template>
+				<template v-if="this.page == '2-2'">
+					<ForsaleBOASum></ForsaleBOASum>
 				</template>
 			</Col>
 		</Row>

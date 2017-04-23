@@ -1,6 +1,6 @@
 <template>
 	<div>
-        <Row>
+        <Row :gutter="16">
             <Col span="16">
                 <div align="center" style="margin-top: 20px">
                 <Radio-group v-model="radioButton" type="button" @on-change="changeItem">
@@ -9,15 +9,15 @@
                     <Radio label="按月统计"></Radio>
                 </Radio-group>
                 </div>
-                <Spin v-if="loading" style="margin-top: 20px">
+                <Spin v-if="loading" style="margin-top: 16px; height: 40px">
                     <Icon type="load-c" size=24 class="spin-icon-load"></Icon>
                     <div>Loading...</div>
                 </Spin>
-                <Spin v-if="!loading" style="margin-top: 20px; height: 45px"></Spin>
+                <div v-if="!loading" style="margin-top: 16px; height: 40px"></div>
                 <div id="showChart" style="width: 900px; height: 500px"></div>
             </Col>
             <Col span="8">
-                <TodayDealDetails ref="tdd"></TodayDealDetails>
+                <DealDetails ref="tdd"></DealDetails>
             </Col>
         </Row>
 	</div>
@@ -33,13 +33,13 @@
     			data: [],
     			saledData: [],
     			loading: true,
-    			radioButton: '按日统计'
+    			radioButton: '按周统计',
+                daysInterval: 7
     		}
     	},
         mounted() {
-            this.selDate = new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString();
             this.getDailySaledSum();
-            this.$refs.tdd.$emit('getTodayDealDetails', new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString());
+            this.$refs.tdd.$emit('getPeriodDetails', new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(), 1);
         },
         methods: {
             changeItem(param) {
@@ -50,17 +50,16 @@
             },
             getDailySaledSum() {
                 const that = this;
-                let dateSpace = 1;
                 if (this.radioButton === "按日统计")
-                    dateSpace = 1;
+                    this.daysInterval = 1;
                 else if (this.radioButton === "按周统计")
-                    dateSpace = 7;
+                    this.daysInterval = 7;
                 else if (this.radioButton === "按月统计")
-                    dateSpace = 30;
+                    this.daysInterval = 30;
                 axios.post('http://localhost:8080/getIntervalSaledHouseNumSum', Qs.stringify({
                         startDay: '',
                         endDay: new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(),
-                        interval: dateSpace
+                        interval: that.daysInterval
                     })
                 )
                 .then(function(resp) {
@@ -102,7 +101,7 @@
             			type: 'time',
             			name: '日期',
             			splitLine: {
-            				show: true
+            				show: false
             			}
             		},
             		yAxis: {
@@ -119,6 +118,7 @@
             			symbolSize: 10,
             			showSymbol: true,
             			hoverAnimation: false,
+                        smooth: true,
             			data: this.saledData
             		}]
             	};
@@ -127,7 +127,7 @@
             	myChart.on('click', function(params) {
 			    	console.log(params.name);
                     that.selDate = params.name;
-                    that.$refs.tdd.$emit('getTodayDealDetails', params.name);
+                    that.$refs.tdd.$emit('getPeriodDetails', params.name, that.daysInterval);
 			    });
 	        }
         }
