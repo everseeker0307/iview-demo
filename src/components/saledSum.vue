@@ -39,7 +39,7 @@
     	},
         mounted() {
             this.getDailySaledSum();
-            this.$refs.tdd.$emit('getPeriodDetails', new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(), 1);
+            this.$refs.tdd.$emit('getPeriodDetails', new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(), 7);
         },
         methods: {
             changeItem(param) {

@@ -11,7 +11,7 @@ fs.open('./src/config/env.js', 'w', function (err, fd) {
 });
 
 module.exports = merge(webpackBaseConfig, {
-    devtool: '#source-map',
+    // devtool: '#source-map',
     output: {
         publicPath: '/dist/',
         filename: '[name].js',
