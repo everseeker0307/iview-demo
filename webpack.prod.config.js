@@ -31,10 +31,14 @@ module.exports = merge(webpackBaseConfig, {
             }
         }),
         new HtmlWebpackPlugin({
-            title: '无锡一手房数据统计',
             filename: '../index.html',
             template: './src/template/index.ejs',
             inject: true
-        })
+        }),
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {
+        //         warnings: false
+        //     }
+        // })
     ]
 });

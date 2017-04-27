@@ -48,7 +48,7 @@
                     this.daysInterval = 7;
                 else if (this.radioButton === "按月统计")
                     this.daysInterval = 30;
-                axios.post('http://localhost:8080/getForsaleZhuzhaiNumSum', Qs.stringify({
+                axios.post('http://103.238.227.120:8080/getForsaleZhuzhaiNumSum', Qs.stringify({
                     startDay: '',
                     endDay: new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(),
                     interval: that.daysInterval  

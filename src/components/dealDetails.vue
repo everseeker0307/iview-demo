@@ -43,7 +43,7 @@
             var that = this;
             this.$on('getPeriodDetails', function(param1, param2) {
                 //post默认发送的参数为json格式，通过Qs.stringify()转换为form-data格式
-                axios.post('http://localhost:8080/getPeriodDetails', Qs.stringify({
+                axios.post('http://103.238.227.120:8080/getPeriodDetails', Qs.stringify({
                         givenday: param1,
                         daysInterval: param2
                     })
@@ -75,19 +75,6 @@
             });
         },
         methods: {
-            getForsaleHouseNumSum() {
-                axios.get('http://localhost:8080/getForsaleHouseNumSum', {
-                    params: {
-                        givenday: new Date().toLocaleDateString()
-                    }
-                })
-                .then(function(resp) {
-                    console.log(resp);
-                })
-                .catch(function(resp) {
-                    console.log(resp);
-                });
-            },
             changePageNum(param) {
                 this.currentPage = param;
                 this.data_deal_show = [];

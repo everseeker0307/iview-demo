@@ -39,7 +39,6 @@
     	},
         mounted() {
             this.getDailySaledSum();
-            this.$refs.tdd.$emit('getPeriodDetails', new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(), 7);
         },
         methods: {
             changeItem(param) {
@@ -56,18 +55,25 @@
                     this.daysInterval = 7;
                 else if (this.radioButton === "按月统计")
                     this.daysInterval = 30;
-                axios.post('http://localhost:8080/getIntervalSaledHouseNumSum', Qs.stringify({
+                axios({
+                    method: 'post',
+                    url: 'http://103.238.227.120:8080/getIntervalSaledHouseNumSum',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    data: Qs.stringify({
                         startDay: '',
                         endDay: new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(),
                         interval: that.daysInterval
                     })
-                )
+                })
                 .then(function(resp) {
                     console.log(resp);
                     if (resp.status === 200) {
                     	that.loading = false;
                     	that.data = resp.data;
                     	that.drawChart();
+                        that.$refs.tdd.$emit('getPeriodDetails', that.data[that.data.length-1].date, that.daysInterval);
                     }
                 })
                 .catch(function(resp) {
