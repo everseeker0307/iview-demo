@@ -11,6 +11,12 @@
 				<template v-if="this.page == '2-2'">
 					<ForsaleBOASum></ForsaleBOASum>
 				</template>
+				<template v-if="this.page == '3-1'">
+					<LimitedZZSum></LimitedZZSum>
+				</template>
+				<template v-if="this.page == '3-2'">
+					<LimitedBOASum></LimitedBOASum>
+				</template>
 			</Col>
 		</Row>
 	</div>

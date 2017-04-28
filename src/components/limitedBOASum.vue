@@ -92,11 +92,11 @@
                     this.daysInterval = 7;
                 else if (this.radioButton === "按月统计")
                     this.daysInterval = 30;
-                axios.post('http://103.238.227.120:8080/getForsaleZhuzhaiNumSum', Qs.stringify({
+                axios.post('http://103.238.227.120:8080/getLimitedBOANumSum', Qs.stringify({
                     startDay: '',
                     endDay: new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(),
                     interval: that.daysInterval,
-                    region: that.region 
+                    region: that.region
                 }))
                 .then(function(resp) {
                     console.log(resp);
@@ -112,16 +112,16 @@
             },
             drawChart() {
                 const myChart = echarts.init(document.getElementById('showChart'));
-                let minNum = this.data[0]["zzNumSum"];
+                let minNum = this.data[0]["boaNumSum"];
                 for (let each in this.data) {
                     let date = this.data[each]["date"];
-                    this.forsaleData.push({"name": date, "value": [date, this.data[each]["zzNumSum"]]});
-                    if (minNum > this.data[each]["zzNumSum"])
-                        minNum = this.data[each]["zzNumSum"];
+                    this.forsaleData.push({"name": date, "value": [date, this.data[each]["boaNumSum"]]});
+                    if (minNum > this.data[each]["boaNumSum"])
+                        minNum = this.data[each]["boaNumSum"];
                 }
                 const option = {
                     title: {
-                        text: '在售-住宅-库存统计(估计值，仅供参考)',
+                        text: '限售-商业办公-库存统计(估计值，仅供参考)',
                         left: '30%'
                     },
                     tooltip: {

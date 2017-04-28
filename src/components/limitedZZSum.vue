@@ -92,7 +92,7 @@
                     this.daysInterval = 7;
                 else if (this.radioButton === "按月统计")
                     this.daysInterval = 30;
-                axios.post('http://103.238.227.120:8080/getForsaleZhuzhaiNumSum', Qs.stringify({
+                axios.post('http://103.238.227.120:8080/getLimitedZhuzhaiNumSum', Qs.stringify({
                     startDay: '',
                     endDay: new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(),
                     interval: that.daysInterval,
@@ -121,7 +121,7 @@
                 }
                 const option = {
                     title: {
-                        text: '在售-住宅-库存统计(估计值，仅供参考)',
+                        text: '限售-住宅-库存统计(估计值，仅供参考)',
                         left: '30%'
                     },
                     tooltip: {

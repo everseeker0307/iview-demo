@@ -3,11 +3,15 @@
         <Row :gutter="16">
             <Col span="16">
                 <div align="center" style="margin-top: 20px">
-                <Radio-group v-model="radioButton" type="button" @on-change="changeItem">
-                    <Radio label="按日统计"></Radio>
-                    <Radio label="按周统计"></Radio>
-                    <Radio label="按月统计"></Radio>
-                </Radio-group>
+                    <Radio-group v-model="radioButton" type="button" @on-change="changeItem">
+                        <Radio label="按日统计"></Radio>
+                        <Radio label="按周统计"></Radio>
+                        <Radio label="按月统计"></Radio>
+                    </Radio-group>
+                    <span style="margin-top: 40px; font-size: 12px">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;行政区:&emsp;</span>
+                    <Select v-model="region" style="width: 100px; margin-top: 5px" @on-change="changeRegion">
+                        <Option v-for="item in regions" :value="item.value" :key="item">{{item.label}}</Option>
+                    </Select>
                 </div>
                 <Spin v-if="loading" style="margin-top: 16px; height: 40px">
                     <Icon type="load-c" size=24 class="spin-icon-load"></Icon>
@@ -34,7 +38,42 @@
     			saledData: [],
     			loading: true,
     			radioButton: '按周统计',
-                daysInterval: 7
+                daysInterval: 7,
+                region: '不限',
+                regions: [
+                    {
+                        value: '不限',
+                        label: '不限'
+                    },
+                    {
+                        value: '惠山区',
+                        label: '惠山区'
+                    },
+                    {
+                        value: '锡山区',
+                        label: '锡山区'
+                    },
+                    {
+                        value: '滨湖区',
+                        label: '滨湖区'
+                    },
+                    {
+                        value: '新区',
+                        label: '新区'
+                    },
+                    {
+                        value: '南长区',
+                        label: '南长区'
+                    },
+                    {
+                        value: '北塘区',
+                        label: '北塘区'
+                    },
+                    {
+                        value: '崇安区',
+                        label: '崇安区'
+                    }
+                ]
     		}
     	},
         mounted() {
@@ -43,6 +82,11 @@
         methods: {
             changeItem(param) {
                 this.radioButton = param;
+                this.saledData = [];
+                this.loading = true;
+                this.getDailySaledSum();
+            },
+            changeRegion(param) {
                 this.saledData = [];
                 this.loading = true;
                 this.getDailySaledSum();
@@ -64,7 +108,8 @@
                     data: Qs.stringify({
                         startDay: '',
                         endDay: new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(),
-                        interval: that.daysInterval
+                        interval: that.daysInterval,
+                        region: that.region
                     })
                 })
                 .then(function(resp) {
@@ -73,7 +118,7 @@
                     	that.loading = false;
                     	that.data = resp.data;
                     	that.drawChart();
-                        that.$refs.tdd.$emit('getPeriodDetails', that.data[that.data.length-1].date, that.daysInterval);
+                        that.$refs.tdd.$emit('getPeriodDetails', that.data[that.data.length-1].date, that.daysInterval, that.region);
                     }
                 })
                 .catch(function(resp) {
@@ -133,7 +178,7 @@
             	myChart.on('click', function(params) {
 			    	console.log(params.name);
                     that.selDate = params.name;
-                    that.$refs.tdd.$emit('getPeriodDetails', params.name, that.daysInterval);
+                    that.$refs.tdd.$emit('getPeriodDetails', params.name, that.daysInterval, that.region);
 			    });
 	        }
         }
